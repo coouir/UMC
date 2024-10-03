@@ -1,0 +1,18 @@
+.movies-list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .movie-item {
+    position: relative;
+    margin: 10px;
+  }
+  
+  .movie-image {
+    transition: filter 0.3s ease; /* 부드러운 전환 효과 */
+  }
+  
+  .movie-item:hover .movie-image {
+    filter: brightness(70%); /* 이미지 어둡게 */
+  }
+  
