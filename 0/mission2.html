@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto 1fr auto;
+            grid-template-areas: 
+                "header menu menu"
+                "hero hero hero"
+                "main empty image"
+                "main empty extra"
+                "banner banner banner";
+            gap: 0px;
+            height: 100vh;
+        }
+
+        .container > div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            color: white;
+        }
+
+        .header {
+            grid-area: header;
+            background-color: #1a1a2e;
+        }
+
+        .menu {
+            grid-area: menu;
+            background-color: #e94560;
+        }
+
+        .hero {
+            grid-area: hero;
+            background-color: #0f4c75;
+        }
+
+        .main {
+            grid-area: main;
+            background-color: #16213e;
+        }
+
+        .image {
+            grid-area: image;
+            background-color: #b2dfdb;
+            color: black;
+        }
+
+        .extra {
+            grid-area: extra;
+            background-color: #4caf50;
+        }
+
+        .banner {
+            grid-area: banner;
+            background-color: #f7b731;
+            color: black;
+        }
+
+        .empty {
+            grid-area: empty;
+            background-color: transparent;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">HEADER</div>
+        <div class="menu">MENU</div>
+        <div class="hero">HERO</div>
+        <div class="main">MAIN</div>
+        <div class="empty"></div> 
+        <div class="image">IMAGE</div>
+        <div class="extra">EXTRA</div>
+        <div class="banner">BANNER</div>
+    </div>
+</body>
+</html>
