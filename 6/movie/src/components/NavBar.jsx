@@ -1,7 +1,6 @@
-// components/NavBar.jsx
 import styled from 'styled-components';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // useNavigate 훅 사용
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const NavBarContainer = styled.nav`
   height: 60px;
@@ -25,13 +24,14 @@ const Logo = styled.div`
 
   a {
     text-decoration: none;
-    color: #e50914; /* 넷플릭스 로고의 빨간색 */
+    color: #e50914;
   }
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   gap: 10px;
+  align-items: center;
 `;
 
 const Button = styled.button`
@@ -44,43 +44,68 @@ const Button = styled.button`
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: ${(props) => (props.isActive ? '#d90409' : '#b81d24')}; 
-    /* hover 시 진한 색상으로 변경 */
+    background-color: ${(props) => (props.isActive ? '#d90409' : '#b81d24')};
   }
 `;
 
 const NavBar = () => {
-  const navigate = useNavigate(); // 페이지 이동을 위한 훅
-  const [activeButton, setActiveButton] = useState(null); // 현재 클릭된 버튼 상태
+  const navigate = useNavigate();
+  const [activeButton, setActiveButton] = useState(null);
+  const [userEmail, setUserEmail] = useState(null);
+
+  useEffect(() => {
+    const email = localStorage.getItem('userEmail');
+    if (email) {
+      setUserEmail(email.split('@')[0]); // Display only the part before '@'
+    }
+  }, []);
 
   const handleLoginClick = () => {
-    setActiveButton('login'); // 로그인 버튼이 클릭됨을 표시
-    navigate('/signin'); // 로그인 클릭 시 '/signin'으로 이동
+    setActiveButton('login');
+    navigate('/signin');
   };
 
   const handleSignupClick = () => {
-    setActiveButton('signup'); // 회원가입 버튼이 클릭됨을 표시
-    navigate('/signout'); // 회원가입 클릭 시 '/signout'으로 이동
+    setActiveButton('signout');
+    navigate('/signout');
+  };
+
+  const handleLogoutClick = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userEmail');
+    setUserEmail(null);
+    setActiveButton(null);
+    navigate('/');
   };
 
   return (
     <NavBarContainer>
       <Logo>
-        <a href="/">Netflix</a> {/* 로고 클릭 시 '/'로 이동 */}
+        <a href="/">Netflix</a>
       </Logo>
       <ButtonContainer>
-        <Button
-          isActive={activeButton === 'login'} // 로그인 버튼이 활성화 상태인지 확인
-          onClick={handleLoginClick}
-        >
-          로그인
-        </Button>
-        <Button
-          isActive={activeButton === 'signup'} // 회원가입 버튼이 활성화 상태인지 확인
-          onClick={handleSignupClick}
-        >
-          회원가입
-        </Button>
+        {userEmail ? (
+          <>
+            <div>{userEmail}</div>
+            <Button onClick={handleLogoutClick}>로그아웃</Button>
+          </>
+        ) : (
+          <>
+            <Button
+              isActive={activeButton === 'login'}
+              onClick={handleLoginClick}
+            >
+              로그인
+            </Button>
+            <Button
+              isActive={activeButton === 'signup'}
+              onClick={handleSignupClick}
+            >
+              회원가입
+            </Button>
+          </>
+        )}
       </ButtonContainer>
     </NavBarContainer>
   );
