@@ -1,5 +1,5 @@
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';  // TanStack Query 추가
+import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -7,7 +7,7 @@ import axios from 'axios';
 // API 호출 함수
 const fetchMovies = async (apiUrl) => {
   const response = await axios.get(apiUrl);
-  return response.data.results;  // 결과만 반환
+  return response.data.results;
 };
 
 const Container = styled.div`
@@ -21,6 +21,7 @@ const MoviesGrid = styled.div`
   gap: 20px;
 `;
 
+// 일반 MovieCard 스타일
 const MovieCard = styled.div`
   background-color: #222;
   border-radius: 10px;
@@ -58,38 +59,86 @@ const ReleaseDate = styled.p`
   color: #bbb;
 `;
 
+// SkeletonCard 스타일
+const SkeletonCard = styled.div`
+  background-color: #333;
+  border-radius: 10px;
+  overflow: hidden;
+  animation: pulse 1.5s infinite ease-in-out;
+  
+  @keyframes pulse {
+    0% {
+      background-color: #333;
+    }
+    50% {
+      background-color: #444;
+    }
+    100% {
+      background-color: #333;
+    }
+  }
+`;
+
+const SkeletonPoster = styled.div`
+  width: 100%;
+  height: 300px;
+  background-color: #444;
+`;
+
+const SkeletonTitle = styled.div`
+  width: 60%;
+  height: 20px;
+  margin: 10px auto;
+  background-color: #555;
+`;
+
+const SkeletonDate = styled.div`
+  width: 40%;
+  height: 15px;
+  margin: 10px auto;
+  background-color: #555;
+`;
+
+// MoviesList 컴포넌트
 const MoviesList = ({ title, apiUrl }) => {
   const navigate = useNavigate();
 
-  // TanStack Query를 사용하여 데이터를 호출합니다.
   const { data: movies, isLoading, isError } = useQuery({
-    queryKey: [apiUrl],  // apiUrl을 queryKey로 설정
+    queryKey: [apiUrl],
     queryFn: () => fetchMovies(apiUrl),
-    enabled: !!apiUrl,  // apiUrl이 유효할 때만 쿼리 실행
+    enabled: !!apiUrl,
   });
 
   const handleMovieClick = (movieId) => {
     navigate(`/movies/${movieId}`);
   };
 
-  // 로딩 중일 때 또는 에러가 발생했을 때 처리
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Failed to load movies.</p>;
-
   return (
     <Container>
       <h1>{title}</h1>
       <MoviesGrid>
-        {movies.map((movie) => (
-          <MovieCard key={movie.id} onClick={() => handleMovieClick(movie.id)}>
-            <MoviePoster 
-              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} 
-              alt={movie.title} 
-            />
-            <MovieTitle>{movie.title}</MovieTitle>
-            <ReleaseDate>{movie.release_date}</ReleaseDate>
-          </MovieCard>
-        ))}
+        {isLoading ? (
+          Array.from({ length: 12 }).map((_, index) => (
+            <SkeletonCard key={index}>
+              <SkeletonPoster />
+              <SkeletonTitle />
+              <SkeletonDate />
+            </SkeletonCard>
+          ))
+        ) : isError ? (
+          <p>Failed to load movies.</p>
+        ) : (
+          movies.map((movie) => (
+            <MovieCard key={movie.id} onClick={() => handleMovieClick(movie.id)}>
+              <MoviePoster
+                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                alt={movie.title}
+              />
+              <MovieTitle>{movie.title}</MovieTitle>
+              <ReleaseDate>{movie.release_date}</ReleaseDate>
+            </MovieCard>
+          ))
+        )}
       </MoviesGrid>
     </Container>
   );
