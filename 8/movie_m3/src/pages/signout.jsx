@@ -11,8 +11,7 @@ import { useMutation } from '@tanstack/react-query';
 const schema = yup.object().shape({
     email: yup.string().email('올바른 형식이 아닙니다.').required('이메일은 필수 입력 항목입니다.'),
     password: yup.string().min(8, '비밀번호는 8자리 이상이어야 합니다.').max(16, '비밀번호는 16자리 이하여야 합니다.').required('비밀번호는 필수 입력 항목입니다.'),
-    passwordCheck: yup.string().oneOf([yup.ref('password'), null], '비밀번호가 일치하지 않습니다.').required('비밀번호 확인은 필수 입력 항목입니다.'),
-    terms: yup.boolean().oneOf([true], '약관에 동의해야 합니다.').required('약관 동의는 필수입니다.')
+    passwordCheck: yup.string().oneOf([yup.ref('password'), null], '비밀번호가 일치하지 않습니다.').required('비밀번호 확인은 필수 입력 항목입니다.')
 });
 
 const SignOutPage = () => {
